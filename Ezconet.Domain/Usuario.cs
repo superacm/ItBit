@@ -1,13 +1,16 @@
-namespace Ezconet.API.Model
+using System;
+
+namespace Ezconet.Domain
 {
     public class Usuario
     {
-        public int UsuarioId { get; set; }
+        public int Id { get; set; }
         public string Nome { get; set; }
-        public string DataNascimnento { get; set; }
+        public DateTime DataNascimnento { get; set; }
         public string Email { get; set; }
         public string Senha { get; set; }
         public int SexoId { get; set; }
+        public Sexo Sexos { get; }
         public bool Ativo { get; set; }
     }
 
