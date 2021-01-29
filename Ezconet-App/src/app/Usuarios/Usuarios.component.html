@@ -1,17 +1,26 @@
-<div class="form-inline">
-  <div class="form-group mb-2">
-    <label class="mr-2">Filtro:</label> <input type="text" class="form-control mr-2" placeholder="buscar" [(ngModel)] = "filtroLista">
-    <div class="input-group-prepend">
-      <label class="input-group-text" for="inputGroupSelect01">Usuários Ativo</label>
+<div class="d-flex">
+
+
+  <div class="form-inline mr-auto">
+    <div class="form-group mb-2">
+      <label class="mr-2">Filtro:</label> <input type="text" class="form-control mr-2" placeholder="buscar" [(ngModel)] = "filtroLista">
+      <div class="input-group-prepend">
+        <label class="input-group-text" for="inputGroupSelect01">Usuários Ativo</label>
+      </div>
+      <br>
+      <select class="custom-select" id="inputGroupSelect01">
+        <option  value="true">Sim</option>
+        <option  value="false">Não</option>
+      </select>
     </div>
-    <br>
-    <select class="custom-select" id="inputGroupSelect01">
-      <option  value="true">Sim</option>
-      <option  value="false">Não</option>
-    </select>
+  </div>
+  <div>
+    <button class="btn btn-outline-primary" (click)="novoUsuario(template)">
+      <i class="fa fa-plus-circle"></i>&nbsp;
+      Novo Usuário
+    </button>
   </div>
 </div>
-
 <h3>
   Filtro: {{filtroLista}}
 </h3>
@@ -34,15 +43,15 @@
       <td>{{usuario.nome}}</td>
       <td>{{usuario.dataNascimnento | DateTimeFormatPipe}}</td>
       <td>{{usuario.email}}</td>
-      <td>{{usuario.senha}}</td>
-      <td >{{ getSexo(usuario.sexoId) }} </td>
+      <td> <input type="password"  value='{{usuario.senha}}' readonly='readonly'> </td>
+      <td >{{ getSexo( usuario.sexoId) }} </td>
       <td>{{ getAtivo(usuario.ativo) }}</td>
       <td>
         <div class="btn-group">
-          <button class="btn btn-sm btn-success" tooltip="Editar" (click)="openmodal(template)">
+          <button class="btn btn-sm btn-success" tooltip="Editar" (click)="editarUsuario(usuario, template)">
             <i class="fa fa-edit"></i>
           </button>
-          <button class="btn btn-sm btn-danger" tooltip="Excluir" (click)="openmodal(template)">
+          <button class="btn btn-sm btn-danger" tooltip="Excluir" (click)="excluirUsuario(usuario, confirm)">
             <i class="fa fa-eraser"></i>
           </button>
         </div>
@@ -61,14 +70,119 @@
   </footer>
 </table>
 
-<ng-template #template>
-  <div class="modal-header">
-    <h4 class="modal-title pull-left">Modal</h4>
-    <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
-      <span aria-hidden="true">&times;</span>
-    </button>
+<div bsModal #template="bs-modal" class="modal fade" tabindex="-1"
+role="dialog" aria-labelledby="dialog-sizes-name1">
+<div class="modal-dialog modal-lg">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h4 id="dialog-sizes-name1" class="modal-title pull-left">{{modalTitulo}}</h4>
+      <button type="button" class="close pull-right" (click)="template.hide()" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <form [formGroup]="registerForm" >
+        <div class="form-row">
+          <div class="form-group col-8">
+            <label>Nome:</label>
+            <input type="text" formControlName="nome" class="form-control" [ngClass]="{'is-invalid': f.nome.errors && f.nome.touched  }" />
+            <div *ngIf="f.nome.touched && f.nome.errors" class="invalid-feedback">
+              <div *ngIf="f.nome.errors.required">Nome é Obrigatorio</div>
+            </div>
+            <div *ngIf="f.nome.hasError('minlength')" class="invalid-feedback">
+              <div *ngIf="f.nome.hasError('minlength')">Minimo de 3 letras </div>
+            </div>
+            <div *ngIf="f.nome.hasError('maxlength')" class="invalid-feedback">
+              <div *ngIf="f.nome.hasError('maxlength')">Maximo de 50 letras </div>
+            </div>
+          </div>
+          <div class="form-group col-4">
+            <label>Data de Nascimento:</label>
+            <input type="text" formControlName="dataNascimento" class="form-control" bsDatepicker
+            [ngClass]="{'is-invalid': f.dataNascimento.errors && f.dataNascimento.touched  }" />
+            <div *ngIf="f.dataNascimento.touched && f.dataNascimento.errors" class="invalid-feedback">
+              <div *ngIf="f.dataNascimento.errors.required">dataNascimento é Obrigatorio</div>
+            </div>
+          </div>
+        </div><!--form-row-->
+        <div class="form-row">
+          <div class="form-group col-3">
+            <label>Email:</label>
+            <input type="email" formControlName="email" class="form-control" [ngClass]="{'is-invalid': f.email.errors && f.email.touched  }" />
+            <div *ngIf="f.email.touched && f.email.errors" class="invalid-feedback">
+              <div *ngIf="f.email.errors.required">email é Obrigatorio</div>
+            </div>
+            <div *ngIf="f.email.hasError('email')" class="invalid-feedback">
+              <div *ngIf="f.email.hasError('email')">digite um email valido </div>
+            </div>
+          </div>
+          <div class="form-group col-3">
+            <label>Senha:</label>
+            <input type="password" formControlName="senha" class="form-control" [ngClass]="{'is-invalid': f.senha.errors && f.senha.touched  }" />
+            <div *ngIf="f.senha.touched && f.senha.errors" class="invalid-feedback">
+              <div *ngIf="f.senha.errors.required">senha é Obrigatorio</div>
+            </div>
+          </div>
+          <div class="form-group col-3">
+            <label>Sexo:</label>
+            <select type="text" formControlName="sexo" class="form-control form-select" [ngClass]="{'is-invalid': f.sexo.errors && f.sexo.touched  }">
+              <option value="1">Feminino</option>
+              <option value="2">Masculino</option>
+            </select>
+            <div *ngIf="f.sexo.touched && f.sexo.errors" class="invalid-feedback">
+              <div *ngIf="f.sexo.errors.required">sexo é Obrigatorio</div>
+            </div>
+          </div>
+          <div class="form-group col-3">
+            <label>Ativo:</label>
+            <select type="text" formControlName="ativo" class="form-control form-select" [ngClass]="{'is-invalid': f.ativo.errors && f.ativo.touched  }">
+              <option value="true">Sim</option>
+              <option value="false">Não</option>
+            </select>
+            <div *ngIf="f.ativo.touched && f.ativo.errors" class="invalid-feedback">
+              <div *ngIf="f.ativo.errors.required">Ativo é Obrigatorio</div>
+            </div>
+          </div>
+
+        </div><!--form-row-->
+      </form>
+
+    </div>
+    <div class="modal-footer d-flex">
+      <button class="btn btn-secondary" (click)="template.hide()">
+        Fechar
+      </button>
+      <button class="btn btn-primary ml-auto" [disabled]="!registerForm.valid" (click)="salvarAlteracao(template)">
+        Salvar Alterações
+      </button>
+    </div>
   </div>
-  <div class="modal-body">
-    This is a modal.
+</div>
+</div>
+
+
+<div bsModal #confirm="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="dialog-sizes-name1">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title pull-left">
+          Deletando Usuario
+        </h4>
+        <button type="button" class="close pull-right" (click)="confirm.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>{{bodyDeletarEvento}}</p>
+      </div>
+      <div class="modal-footer btn-group d-flex">
+        <button type="button" class="btn btn-outline-primary" (click)="confirm.hide()">
+          CENCELAR
+        </button>
+        <button type="button" class="btn btn-outline-danger" (click)="confirmeDelete(confirm)">
+          DELETAR
+        </button>
+      </div>
+    </div>
   </div>
-</ng-template>
+</div>

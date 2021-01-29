@@ -20,4 +20,16 @@ export class UsuariosService {
   getUsuarioById(id: number): Observable<Usuario> {
     return this.http.get<Usuario>(`${this.baseURL}/${id}`);
   }
+
+  postUsuario(usuario: Usuario) {
+    return this.http.post(this.baseURL, usuario);
+  }
+
+  putUsuario(usuario: Usuario) {
+    return this.http.put(`${this.baseURL}/${usuario.id}`, usuario);
+  }
+
+  deleteUsuario(id: number) {
+    return this.http.delete(`${this.baseURL}/${id}`);
+  }
 }

@@ -90,7 +90,7 @@ namespace Ezconet.API.Controllers
         }
 
         // PUT api/values/5
-        [HttpPut]
+        [HttpPut("{Id}")]
         public async Task<IActionResult> Put(int UsuarioId, Usuario model)
         {
             try
@@ -113,7 +113,7 @@ namespace Ezconet.API.Controllers
         }
 
         // DELETE api/values/5
-        [HttpDelete]
+        [HttpDelete("{Id}")]
         public async Task<IActionResult> Delete(int UsuarioId)
         {
             try

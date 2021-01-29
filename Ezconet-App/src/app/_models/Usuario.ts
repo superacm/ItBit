@@ -8,6 +8,5 @@ export interface Usuario {
   senha: string;
   sexoId: number;
   ativo: boolean;
-  sexo: Sexo;
 }
 

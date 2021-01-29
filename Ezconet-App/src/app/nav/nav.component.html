@@ -19,19 +19,28 @@
       <li class="nav-item dropdown" dropdown>
         <a dropdownToggle class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
           aria-haspopup="true" aria-expanded="false">
-          Vinícius
+          Alex Moreno
         </a>
         <div *dropdownMenu class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-          <a class="dropdown-item" href="#">
+          <a class="dropdown-item" (click)="openmodal(template)" href="#">
             Perfil
           </a>
-          <div role="separator" class="divider"></div>
-          <a class="dropdown-item" href="#">
-            Sair
-          </a>
+
         </div>
       </li>
     </ul>
   </div>
 
 </nav>
+<ng-template #template>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Modal</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    Alex Moreno - Desenvolvedor Full-stack
+    <i>  https://candidates.revelo.com.br/candidates/profile?locale=pt-BR</i>
+  </div>
+</ng-template>
