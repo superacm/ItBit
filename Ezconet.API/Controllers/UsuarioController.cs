@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using Ezconet.API.Dtos;
 using Ezconet.Domain;
 using Ezconet.Repository;
 using Microsoft.AspNetCore.Http;
@@ -15,8 +17,10 @@ namespace Ezconet.API.Controllers
     public class UsuarioController : ControllerBase
     {
         public readonly IEzconetRepository _repo;
-        public UsuarioController(IEzconetRepository repo)
+         private readonly IMapper _mapper;
+        public UsuarioController(IEzconetRepository repo, IMapper mapper)
         {
+            _mapper = mapper;
             _repo = repo;
 
         }
@@ -26,13 +30,15 @@ namespace Ezconet.API.Controllers
         {
             try
             {
-                var result = await _repo.GetAllUsuarioAsync();
-                return Ok(result);
+                var usuarios = await _repo.GetAllUsuarioAsync();
+
+                var results = _mapper.Map<UsuarioDto[]>(usuarios); 
+                return Ok(results);
             }
-            catch (System.Exception)
+            catch (System.Exception ex)
             {
                 
-                return this.StatusCode(StatusCodes.Status500InternalServerError, "Falha ao acessar o banco de dados");
+                return this.StatusCode(StatusCodes.Status500InternalServerError, $"Falha ao acessar o banco de dados {ex.Message}");
             }
             
         }
@@ -43,7 +49,10 @@ namespace Ezconet.API.Controllers
         {
             try
             {
-                var result = await _repo.GetUsuarioAsyncById(id);
+                var usuario = await _repo.GetUsuarioAsyncById(id);
+
+                var result = _mapper.Map<UsuarioDto>(usuario); 
+
                 return Ok(result);
             }
             catch (System.Exception)
@@ -59,7 +68,10 @@ namespace Ezconet.API.Controllers
         {
            try
             {
-                var result = await _repo.GetAllUsuariosAsyncByName(nome);
+                var usuario = await _repo.GetAllUsuariosAsyncByName(nome);
+
+                var result = _mapper.Map<UsuarioDto>(usuario);
+
                 return Ok(result);
             }
             catch (System.Exception)
@@ -71,15 +83,17 @@ namespace Ezconet.API.Controllers
 
         // POST api/values
         [HttpPost]
-        public async Task<IActionResult> Post(Usuario model)
+        public async Task<IActionResult> Post(UsuarioDto model)
         {
             try
             {
-                 _repo.Add(model);
+                var usuario = _mapper.Map<Usuario>(model);
+
+                 _repo.Add(usuario);
 
                 if(await _repo.SaveChangesAsync())
                 {
-                    return Created($"/api/usuario/{model.Id}", model);
+                    return Created($"/api/usuario/{model.Id}", _mapper.Map<UsuarioDto>(usuario));
                 }
             }
             catch (System.Exception)
@@ -102,7 +116,7 @@ namespace Ezconet.API.Controllers
 
                 if(await _repo.SaveChangesAsync())
                 {
-                    return Created($"/api/usuario/{model.Id}", model);
+                    return Created($"/api/usuario/{model.Id}", _mapper.Map<UsuarioDto>(usuario));
                 }
             }
             catch (System.Exception)

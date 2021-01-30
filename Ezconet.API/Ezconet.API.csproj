@@ -16,5 +16,4 @@
     <ProjectReference Include="..\Ezconet.Domain\Ezconet.Domain.csproj" />
     <ProjectReference Include="..\Ezconet.Repository\Ezconet.Repository.csproj" />
   </ItemGroup>
-
 </Project>

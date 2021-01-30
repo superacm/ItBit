@@ -64,7 +64,7 @@ export class UsuariosComponent implements OnInit {
       this.modalTitulo = 'Editar Cadastro';
       this.openModal(template);
       this.usuario = Object.assign({}, usuario);
-      this.registerForm.patchValue(usuario);
+      this.registerForm.patchValue(this.usuario);
     }
 
     // tslint:disable-next-line: typedef
@@ -77,7 +77,7 @@ export class UsuariosComponent implements OnInit {
     excluirUsuario(usuario: Usuario, template: any) {
       this.openModal(template);
       this.usuario = usuario;
-      this.bodyDeletarEvento = `Tem certeza que deseja excluir o Usuário: ${usuario.nome}, Código: ${usuario.id}`;
+      this.bodyDeletarEvento = `Tem certeza que deseja excluir o Usuário: ${this.usuario.nome}, Código: ${this.usuario.id}`;
     }
 
     confirmeDelete(template: any) {
@@ -103,13 +103,12 @@ export class UsuariosComponent implements OnInit {
 
       validation(){
         this.registerForm = this.fb.group({
-          nome: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
+          nome: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(200)]],
           dataNascimento: ['', Validators.required],
           email: ['', [Validators.required, Validators.email]],
           senha: ['', Validators.required],
           sexo: ['',Validators.required],
           ativo: ['', Validators.required]
-
         })
       }
 
