@@ -104,35 +104,38 @@ namespace Ezconet.API.Controllers
         }
 
         // PUT api/values/5
-        [HttpPut("{Id}")]
-        public async Task<IActionResult> Put(int UsuarioId, Usuario model)
+        [HttpPut("{UsuarioId}")]
+        public async Task<IActionResult> Put(int UsuarioId, UsuarioDto model)
         {
             try
             {
-                var usuario = _repo.GetUsuarioAsyncById(UsuarioId);
+                var usuario = await _repo.GetUsuarioAsyncById(UsuarioId);
+
                 if(usuario == null) return NotFound();
 
-                 _repo.Update(model);
+                _mapper.Map(model, usuario);
+                
+                 _repo.Update(usuario);
 
                 if(await _repo.SaveChangesAsync())
                 {
                     return Created($"/api/usuario/{model.Id}", _mapper.Map<UsuarioDto>(usuario));
                 }
             }
-            catch (System.Exception)
+            catch (System.Exception ex)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, "Falha ao acessar o banco de dados");
+                return this.StatusCode(StatusCodes.Status500InternalServerError, $"Falha ao acessar o banco de dados {ex.Message}");
             }
            return BadRequest();
         }
 
         // DELETE api/values/5
-        [HttpDelete("{Id}")]
+        [HttpDelete("{UsuarioId}")]
         public async Task<IActionResult> Delete(int UsuarioId)
         {
             try
             {
-                var usuario = _repo.GetUsuarioAsyncById(UsuarioId);
+                var usuario = await _repo.GetUsuarioAsyncById(UsuarioId);
                 if(usuario == null) return NotFound();
 
                  _repo.Delete(usuario);
@@ -142,9 +145,9 @@ namespace Ezconet.API.Controllers
                     return Ok();
                 }
             }
-            catch (System.Exception)
+            catch (System.Exception ex)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, "Falha ao acessar o banco de dados");
+                return this.StatusCode(StatusCodes.Status500InternalServerError, $"Falha ao acessar o banco de dados {ex.Message}");
             }
            return BadRequest();
         }

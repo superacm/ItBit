@@ -1,16 +1,16 @@
-import { UsuarioService } from './../_services/usuario.service';
 import { Sexo } from './../_models/Sexo';
 import { Usuario } from './../_models/Usuario';
 import { UsuariosService } from './../_services/usuarios.service';
-import { Component, OnInit, TemplateRef } from '@angular/core';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { Component, OnInit } from '@angular/core';
+import { BsModalService } from 'ngx-bootstrap/modal';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { defineLocale, ptBrLocale } from 'ngx-bootstrap/chronos';
-import { deLocale } from 'ngx-bootstrap/locale';
+import { ptBrLocale } from 'ngx-bootstrap/locale';
+import { defineLocale } from 'ngx-bootstrap/chronos';
 import { BsLocaleService } from 'ngx-bootstrap/datepicker'
 import { ToastrService } from 'ngx-toastr';
 
 defineLocale('pt-br', ptBrLocale);
+
 
 @Component({
   selector: 'app-Usuarios',
@@ -23,8 +23,9 @@ export class UsuariosComponent implements OnInit {
   usuario!: Usuario;
   sexo!: Sexo;
   usuariosFiltrados: Usuario[] = [];
-
+  dataNascimento = "";
   _filtroLista = '';
+  _filtroListaAtivos: boolean = true;
   registerForm!: FormGroup;
   submitted = false;
   modoSalvar = 'post';
@@ -49,6 +50,15 @@ export class UsuariosComponent implements OnInit {
       this.usuariosFiltrados = this.filtroLista ? this.filtrarUsuarios(this.filtroLista) : this.usuarios;
     }
 
+    get filtroListaAtivo(): boolean {
+      return this._filtroListaAtivos;
+    }
+    set filtroListaAtivo(value: boolean) {
+      this._filtroListaAtivos = value;
+      console.log(this._filtroListaAtivos);
+      this.usuariosFiltrados = this._filtroListaAtivos ? this.filtrarUsuariosAtivos(this._filtroListaAtivos) : this.usuarios;
+    }
+
     openModal(template: any ){
       this.registerForm.reset();
       template.show()
@@ -64,6 +74,7 @@ export class UsuariosComponent implements OnInit {
       this.modalTitulo = 'Editar Cadastro';
       this.openModal(template);
       this.usuario = Object.assign({}, usuario);
+      console.log(usuario);
       this.registerForm.patchValue(this.usuario);
     }
 
@@ -96,9 +107,15 @@ export class UsuariosComponent implements OnInit {
     filtrarUsuarios(filtrarPor: string): Usuario[] {
       filtrarPor = filtrarPor.toLocaleLowerCase();
       return this.usuarios.filter(
-        usuario => usuario.nome.toLocaleLowerCase().indexOf(filtrarPor) !== -1
+        usuario => usuario.nome.toLocaleLowerCase().indexOf(filtrarPor) !== -1 
         );
       }
+
+
+      filtrarUsuariosAtivos(ativos: boolean): Usuario[] {
+        return this.usuarios.filter(usuario => usuario.ativo.valueOf() === ativos);
+        }
+
       get f() { return this.registerForm.controls; }
 
       validation(){
@@ -107,7 +124,7 @@ export class UsuariosComponent implements OnInit {
           dataNascimento: ['', Validators.required],
           email: ['', [Validators.required, Validators.email]],
           senha: ['', Validators.required],
-          sexo: ['',Validators.required],
+          sexoId: ['',Validators.required],
           ativo: ['', Validators.required]
         })
       }
@@ -165,10 +182,10 @@ export class UsuariosComponent implements OnInit {
             getSexo(id: any){
               if(id == 1)
               {
-                return "Masculino";
+                return "Feminino";
               }else
               {
-                return "Feminino";
+                return "Masculino";
               }
             }
           }

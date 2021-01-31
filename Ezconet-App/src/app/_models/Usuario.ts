@@ -1,4 +1,3 @@
-import { Sexo } from "./Sexo";
 
 export interface Usuario {
   id: number;
