@@ -1,3 +1,4 @@
+import { DatePipe, formatDate } from '@angular/common';
 import { Sexo } from './../_models/Sexo';
 import { Usuario } from './../_models/Usuario';
 import { UsuariosService } from './../_services/usuarios.service';
@@ -23,7 +24,7 @@ export class UsuariosComponent implements OnInit {
   usuario!: Usuario;
   sexo!: Sexo;
   usuariosFiltrados: Usuario[] = [];
-  dataNascimento = "";
+  DataNascimento = "";
   _filtroLista = '';
   _filtroListaAtivos: boolean = true;
   registerForm!: FormGroup;
@@ -107,7 +108,7 @@ export class UsuariosComponent implements OnInit {
     filtrarUsuarios(filtrarPor: string): Usuario[] {
       filtrarPor = filtrarPor.toLocaleLowerCase();
       return this.usuarios.filter(
-        usuario => usuario.nome.toLocaleLowerCase().indexOf(filtrarPor) !== -1 
+        usuario => usuario.nome.toLocaleLowerCase().indexOf(filtrarPor) !== -1
         );
       }
 
@@ -121,7 +122,7 @@ export class UsuariosComponent implements OnInit {
       validation(){
         this.registerForm = this.fb.group({
           nome: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(200)]],
-          dataNascimento: ['', Validators.required],
+          DataNascimento: ['', Validators.required],
           email: ['', [Validators.required, Validators.email]],
           senha: ['', Validators.required],
           sexoId: ['',Validators.required],

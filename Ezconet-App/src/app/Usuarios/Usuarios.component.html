@@ -40,7 +40,7 @@
     <tr *ngFor="let usuario of usuariosFiltrados">
       <td>{{usuario.id}}</td>
       <td>{{usuario.nome}}</td>
-      <td>{{usuario.dataNascimnento | date: 'dd/MM/yyyy' }}</td>
+      <td>{{usuario.DataNascimento | date: 'dd/MM/yyyy' }}</td>
       <td>{{usuario.email}}</td>
       <td> <input type="password"  value='{{usuario.senha}}' readonly='readonly'> </td>
       <td >{{ getSexo( usuario.sexoId) }} </td>
@@ -97,12 +97,12 @@ role="dialog" aria-labelledby="dialog-sizes-name1">
           </div>
           <div class="form-group col-4">
             <label>Data de Nascimento:</label>
-            <input type="text" formControlName="dataNascimento" class="form-control" bsDatepicker
-            value="{{dataNascimento | date: 'dd/MM/yyyy'}}" id="dataNascimento"
-            [bsConfig]="{ dateInputFormat : 'DD/MM/YYYY', isAnimated: true }"
-            [ngClass]="{'is-invalid': f.dataNascimento.errors && f.dataNascimento.touched  }" />
-            <div *ngIf="f.dataNascimento.touched && f.dataNascimento.errors" class="invalid-feedback">
-              <div *ngIf="f.dataNascimento.errors.required">dataNascimento é Obrigatorio</div>
+            <input type="text" formControlName="DataNascimento" class="form-control" bsDatepicker
+            value="{{DataNascimento | date: 'dd/MM/yyyy'}}" id="DataNascimento"
+            [bsConfig]="{ dateInputFormat : 'dd/MM/yyyy', isAnimated: true }"
+            [ngClass]="{'is-invalid': f.DataNascimento.errors && f.DataNascimento.touched  }" />
+            <div *ngIf="f.DataNascimento.touched && f.DataNascimento.errors" class="invalid-feedback">
+              <div *ngIf="f.DataNascimento.errors.required">DataNascimento é Obrigatorio</div>
             </div>
           </div>
         </div><!--form-row-->

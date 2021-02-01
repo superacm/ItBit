@@ -10,7 +10,7 @@ namespace Ezconet.API.Dtos
          [StringLength(200, MinimumLength=3, ErrorMessage="Digite no minimo 3 e no maximo 200 caracteres")]
         public string Nome { get; set; }
         [Required (ErrorMessage="Data de Nascimento é obrigatorio")]
-        public DateTime DataNascimnento { get; set; }
+        public string DataNascimento { get; set; }
         [EmailAddress]
         [Required (ErrorMessage="Email é obrigatorio")]
         public string Email { get; set; }

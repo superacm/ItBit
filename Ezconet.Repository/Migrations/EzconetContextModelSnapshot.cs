@@ -40,7 +40,7 @@ namespace Ezconet.Repository.Migrations
 
                     b.Property<bool>("Ativo");
 
-                    b.Property<DateTime>("DataNascimnento");
+                    b.Property<DateTime>("DataNascimento");
 
                     b.Property<string>("Email");
 

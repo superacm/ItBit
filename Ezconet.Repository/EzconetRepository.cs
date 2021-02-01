@@ -48,7 +48,7 @@ namespace Ezconet.Repository
             IQueryable<Usuario> query = _context.Usuarios;
 
            query = query.AsNoTracking()
-                        .OrderByDescending(c => c.DataNascimnento)
+                        .OrderBy(c => c.Id)
                         .Where(c => c.Nome.ToLower().Contains(name.ToLower()));
 
             return await query.ToArrayAsync();
