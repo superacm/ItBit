@@ -26,6 +26,7 @@ export class UsuariosComponent implements OnInit {
   sexo!: Sexo;
   ativos!: boolean;
   usuariosFiltrados: Usuario[] = [];
+  usuariosFiltradosAtivos: Usuario[] = []
   dataNascimento!: string;
   _filtroLista = '';
   _filtroListaAtivos: boolean = true;
@@ -58,9 +59,7 @@ export class UsuariosComponent implements OnInit {
     }
     set filtroListaAtivo(value: boolean) {
       this._filtroListaAtivos = value;
-      this.usuariosFiltrados = this.usuarios;
       this.usuariosFiltrados = this._filtroListaAtivos ? this.filtrarUsuariosAtivos(this._filtroListaAtivos) : this.usuarios;
-      console.log(this._filtroListaAtivos);
     }
 
     openModal(template: any ){
@@ -117,7 +116,7 @@ export class UsuariosComponent implements OnInit {
 
 
         filtrarUsuariosAtivos(ativos: boolean): Usuario[] {
-         console.log(this.usuarios.filter(u => u.ativo.valueOf() == ativos));
+         return this.usuarios.filter(u => u.ativo.valueOf() == ativos);
         }
 
         get f() { return this.registerForm.controls; }
@@ -137,7 +136,6 @@ export class UsuariosComponent implements OnInit {
           if (this.registerForm.valid) {
             if (this.modoSalvar === 'post') {
               this.usuario = Object.assign({}, this.registerForm.value);
-              console.log(this.usuario)
               this.usuarioService.postUsuario(this.usuario).subscribe(
                 () => {
                   template.hide();
@@ -167,9 +165,9 @@ export class UsuariosComponent implements OnInit {
                 (_usuario: Usuario[]) => {
                   this.usuarios = _usuario
                   this.usuariosFiltrados = this.usuarios;
-                  console.log(this.usuariosFiltrados);
+                  this.usuariosFiltradosAtivos = this.usuarios;
                 }, error => {
-                  console.log(error)
+                  this.toastr.error(`Erro ao Editar: ${error}`);
                 }
                 );
               }
