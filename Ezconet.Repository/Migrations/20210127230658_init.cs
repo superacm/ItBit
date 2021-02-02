@@ -28,7 +28,7 @@ namespace Ezconet.Repository.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Nome = table.Column<string>(nullable: true),
-                    DataNascimnento = table.Column<DateTime>(nullable: false),
+                    DataNascimento = table.Column<DateTime>(nullable: false),
                     Email = table.Column<string>(nullable: true),
                     Senha = table.Column<string>(nullable: true),
                     SexoId = table.Column<int>(nullable: false),
