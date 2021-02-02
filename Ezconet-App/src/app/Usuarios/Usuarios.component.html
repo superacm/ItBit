@@ -6,10 +6,10 @@
         <label class="input-group-text" for="ativos">Usuários Ativo</label>
       </div>
       <br>
-      <select class="custom-select" id="ativos" [(ngModel)] = "filtroListaAtivo">
+      <select class="custom-select" id="ativos" name="ativos" [(ngModel)]="filtroListaAtivo" >
         <option  selected value="">Todos</option>
-        <option  value="true">Sim</option>
-        <option  value="false">Não</option>
+        <option value="true">Sim</option>
+        <option value="false">Não</option>
       </select>
     </div>
   </div>

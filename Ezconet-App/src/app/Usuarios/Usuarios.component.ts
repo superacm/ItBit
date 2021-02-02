@@ -29,7 +29,7 @@ export class UsuariosComponent implements OnInit {
   usuariosFiltradosAtivos: Usuario[] = []
   dataNascimento!: string;
   _filtroLista = '';
-  _filtroListaAtivos: boolean = true;
+  _filtroListaAtivos!: boolean;
   registerForm!: FormGroup;
   submitted = false;
   modoSalvar = 'post';
@@ -60,6 +60,7 @@ export class UsuariosComponent implements OnInit {
     set filtroListaAtivo(value: boolean) {
       this._filtroListaAtivos = value;
       this.usuariosFiltrados = this._filtroListaAtivos ? this.filtrarUsuariosAtivos(this._filtroListaAtivos) : this.usuarios;
+      console.log(this.usuariosFiltrados);
     }
 
     openModal(template: any ){
@@ -115,8 +116,12 @@ export class UsuariosComponent implements OnInit {
         }
 
 
+
         filtrarUsuariosAtivos(ativos: boolean): Usuario[] {
-         return this.usuarios.filter(u => u.ativo.valueOf() == ativos);
+          let ativo = ativos;
+          let uarray  = this.usuarios;
+          console.log(uarray);
+          return uarray.filter(u =>  u.ativo === ativo );
         }
 
         get f() { return this.registerForm.controls; }
