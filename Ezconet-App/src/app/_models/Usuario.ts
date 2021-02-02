@@ -2,7 +2,7 @@
 export interface Usuario {
   id: number;
   nome: string;
-  DataNascimento: number;
+  dataNascimento: Date;
   email: string;
   senha: string;
   sexoId: number;

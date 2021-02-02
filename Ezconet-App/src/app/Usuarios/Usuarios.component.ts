@@ -9,6 +9,7 @@ import { ptBrLocale } from 'ngx-bootstrap/locale';
 import { defineLocale } from 'ngx-bootstrap/chronos';
 import { BsLocaleService } from 'ngx-bootstrap/datepicker'
 import { ToastrService } from 'ngx-toastr';
+import { JsonpClientBackend } from '@angular/common/http';
 
 defineLocale('pt-br', ptBrLocale);
 
@@ -23,8 +24,9 @@ export class UsuariosComponent implements OnInit {
   usuarios: Usuario[] = [];
   usuario!: Usuario;
   sexo!: Sexo;
+  ativos!: boolean;
   usuariosFiltrados: Usuario[] = [];
-  DataNascimento = "";
+  dataNascimento!: string;
   _filtroLista = '';
   _filtroListaAtivos: boolean = true;
   registerForm!: FormGroup;
@@ -56,8 +58,9 @@ export class UsuariosComponent implements OnInit {
     }
     set filtroListaAtivo(value: boolean) {
       this._filtroListaAtivos = value;
-      console.log(this._filtroListaAtivos);
+      this.usuariosFiltrados = this.usuarios;
       this.usuariosFiltrados = this._filtroListaAtivos ? this.filtrarUsuariosAtivos(this._filtroListaAtivos) : this.usuarios;
+      console.log(this._filtroListaAtivos);
     }
 
     openModal(template: any ){
@@ -75,7 +78,7 @@ export class UsuariosComponent implements OnInit {
       this.modalTitulo = 'Editar Cadastro';
       this.openModal(template);
       this.usuario = Object.assign({}, usuario);
-      console.log(usuario);
+      console.log(this.usuario);
       this.registerForm.patchValue(this.usuario);
     }
 
@@ -102,91 +105,92 @@ export class UsuariosComponent implements OnInit {
           this.toastr.error('Erro ao tentar Deletar');
           console.log(error);
         }
-      );
-    }
-
-    filtrarUsuarios(filtrarPor: string): Usuario[] {
-      filtrarPor = filtrarPor.toLocaleLowerCase();
-      return this.usuarios.filter(
-        usuario => usuario.nome.toLocaleLowerCase().indexOf(filtrarPor) !== -1
         );
       }
 
-
-      filtrarUsuariosAtivos(ativos: boolean): Usuario[] {
-        return this.usuarios.filter(usuario => usuario.ativo.valueOf() === ativos);
+      filtrarUsuarios(filtrarPor: string): Usuario[] {
+        filtrarPor = filtrarPor.toLocaleLowerCase();
+        return this.usuarios.filter(
+          usuario => usuario.nome.toLocaleLowerCase().indexOf(filtrarPor) !== -1
+          );
         }
 
-      get f() { return this.registerForm.controls; }
 
-      validation(){
-        this.registerForm = this.fb.group({
-          nome: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(200)]],
-          DataNascimento: ['', Validators.required],
-          email: ['', [Validators.required, Validators.email]],
-          senha: ['', Validators.required],
-          sexoId: ['',Validators.required],
-          ativo: ['', Validators.required]
-        })
-      }
+        filtrarUsuariosAtivos(ativos: boolean): Usuario[] {
+         console.log(this.usuarios.filter(u => u.ativo.valueOf() == ativos));
+        }
 
-      salvarAlteracao(template: any) {
-        if (this.registerForm.valid) {
-          if (this.modoSalvar === 'post') {
-            this.usuario = Object.assign({}, this.registerForm.value);
-            console.log(this.usuario)
-            this.usuarioService.postUsuario(this.usuario).subscribe(
-              () => {
-                template.hide();
-                this.getUsuarios();
-                this.toastr.success('Inserido com Sucesso!');
-              }, error => {
-                this.toastr.error(`Erro ao Inserir: ${error}`);
-              }
-              );
-            } else {
-              this.usuario = Object.assign({ id: this.usuario.id }, this.registerForm.value);
-              this.usuarioService.putUsuario(this.usuario).subscribe(
+        get f() { return this.registerForm.controls; }
+
+        validation(){
+          this.registerForm = this.fb.group({
+            nome: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(200)]],
+            dataNascimento: ['', Validators.required],
+            email: ['', [Validators.required, Validators.email]],
+            senha: ['', Validators.required],
+            sexoId: ['',Validators.required],
+            ativo: ['', Validators.required]
+          })
+        }
+
+        salvarAlteracao(template: any) {
+          if (this.registerForm.valid) {
+            if (this.modoSalvar === 'post') {
+              this.usuario = Object.assign({}, this.registerForm.value);
+              console.log(this.usuario)
+              this.usuarioService.postUsuario(this.usuario).subscribe(
                 () => {
                   template.hide();
                   this.getUsuarios();
-                  this.toastr.success('Editado com Sucesso!');
+                  this.toastr.success('Inserido com Sucesso!');
                 }, error => {
-                  this.toastr.error(`Erro ao Editar: ${error}`);
+                  this.toastr.error(`Erro ao Inserir: ${error}`);
+                }
+                );
+              } else {
+                this.usuario = Object.assign({ id: this.usuario.id }, this.registerForm.value);
+                this.usuarioService.putUsuario(this.usuario).subscribe(
+                  () => {
+                    template.hide();
+                    this.getUsuarios();
+                    this.toastr.success('Editado com Sucesso!');
+                  }, error => {
+                    this.toastr.error(`Erro ao Editar: ${error}`);
+                  }
+                  );
+                }
+              }
+            }
+
+            getUsuarios(){
+              this.usuarioService.getAllUsuario().subscribe(
+                (_usuario: Usuario[]) => {
+                  this.usuarios = _usuario
+                  this.usuariosFiltrados = this.usuarios;
+                  console.log(this.usuariosFiltrados);
+                }, error => {
+                  console.log(error)
                 }
                 );
               }
-            }
-          }
 
-          getUsuarios(){
-            this.usuarioService.getAllUsuario().subscribe(
-              (_usuario: Usuario[]) => {
-                this.usuarios = _usuario
-                this.usuariosFiltrados = this.usuarios;
-              }, error => {
-                console.log(error)
+              getAtivo(bol: any){
+                if(bol == true)
+                {
+                  return "Sim";
+                }else
+                {
+                  return "Não";
+                }
               }
-              );
-            }
 
-            getAtivo(bol: any){
-              if(bol == true)
-              {
-                return "Sim";
-              }else
-              {
-                return "Não";
+              getSexo(id: any){
+                if(id == 1)
+                {
+                  return "Feminino";
+                }else
+                {
+                  return "Masculino";
+                }
               }
             }
-
-            getSexo(id: any){
-              if(id == 1)
-              {
-                return "Feminino";
-              }else
-              {
-                return "Masculino";
-              }
-            }
-          }
